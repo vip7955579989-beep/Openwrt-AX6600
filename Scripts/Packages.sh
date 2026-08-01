@@ -52,23 +52,29 @@ UPDATE_PACKAGE() {
 # UPDATE_PACKAGE "open-app-filter" "destan19/OpenAppFilter" "master" "" "luci-app-appfilter oaf" 这样会把原有的open-app-filter，luci-app-appfilter，oaf相关组件删除，不会出现coremark错误。
 
 # UPDATE_PACKAGE "包名" "项目地址" "项目分支" "pkg/name，可选，pkg为从大杂烩中单独提取包名插件；name为重命名为包名"
-#UPDATE_PACKAGE "argon" "sbwml/luci-theme-argon" "openwrt-25.12"
-#UPDATE_PACKAGE "aurora" "ones20250/luci-theme-aurora" "master"
-#UPDATE_PACKAGE "aurora-config" "ones20250/luci-app-aurora-config" "master"
-#UPDATE_PACKAGE "kucat" "sirpdboy/luci-theme-kucat" "master"
-#UPDATE_PACKAGE "kucat-config" "sirpdboy/luci-app-kucat-config" "master"
+# 解封全套精美主题
+UPDATE_PACKAGE "argon" "sbwml/luci-theme-argon" "openwrt-25.12"
+UPDATE_PACKAGE "aurora" "ones20250/luci-theme-aurora" "master"
+UPDATE_PACKAGE "aurora-config" "ones20250/luci-app-aurora-config" "master"
+UPDATE_PACKAGE "kucat" "sirpdboy/luci-theme-kucat" "master"
+UPDATE_PACKAGE "kucat-config" "sirpdboy/luci-app-kucat-config" "master"
 
-#UPDATE_PACKAGE "homeproxy" "ones20250/homeproxy" "master"
-#UPDATE_PACKAGE "momo" "nikkinikki-org/OpenWrt-momo" "main"
-#UPDATE_PACKAGE "nikki" "nikkinikki-org/OpenWrt-nikki" "main"
+# 解封全套科学上网代理插件
+UPDATE_PACKAGE "homeproxy" "ones20250/homeproxy" "master"
+UPDATE_PACKAGE "momo" "nikkinikki-org/OpenWrt-momo" "main"
+UPDATE_PACKAGE "nikki" "nikkinikki-org/OpenWrt-nikki" "main"
+UPDATE_PACKAGE "passwall" "Openwrt-Passwall/openwrt-passwall" "main" "pkg"
+
+# 解封 iStore 应用商店与 QuickStart
+UPDATE_PACKAGE "istore-ui" "linkease/istore-ui" "main"
+UPDATE_PACKAGE "istore" "linkease/istore" "main"
+
 if [[ "${WRT_PROFILE^^}" == "PLUS" ]]; then
 	# 自动集成 daed 核心与 luci-app-daede 界面
 	UPDATE_PACKAGE "openwrt-daede" "kenzok8/openwrt-daede" "main" "pkg"
 	# LuCI 入口随 "pkg" 通配一并提取，依赖包（xray、sing-box、geodata 等）
 	# 由 passwall_packages feed 提供，避免同名包双重定义。
 	UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "master" "pkg"
-	#一代 PassWall 已由 PassWall2 取代，fork 者如需可取消注释，并同步启用 Config/GENERAL_AX6600_PLUS.txt 中对应配置段
-	#UPDATE_PACKAGE "passwall" "Openwrt-Passwall/openwrt-passwall" "main" "pkg"
 	UPDATE_PACKAGE "passwall2" "Openwrt-Passwall/openwrt-passwall2" "main" "pkg"
 	# 分区扩容与网络唤醒：源码仅 PLUS 版拉取，PURE 中同名 =y 配置因无源码自动失效
 	UPDATE_PACKAGE "partexp" "sirpdboy/luci-app-partexp" "main"
