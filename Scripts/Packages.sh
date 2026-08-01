@@ -59,10 +59,7 @@ UPDATE_PACKAGE "aurora-config" "ones20250/luci-app-aurora-config" "master"
 UPDATE_PACKAGE "kucat" "sirpdboy/luci-theme-kucat" "master"
 UPDATE_PACKAGE "kucat-config" "sirpdboy/luci-app-kucat-config" "master"
 
-# 解封全套科学上网代理插件
-UPDATE_PACKAGE "homeproxy" "ones20250/homeproxy" "master"
-UPDATE_PACKAGE "momo" "nikkinikki-org/OpenWrt-momo" "main"
-UPDATE_PACKAGE "nikki" "nikkinikki-org/OpenWrt-nikki" "main"
+# 科学上网代理插件 (已排除 HomeProxy, Momo, Nikki)
 UPDATE_PACKAGE "passwall" "Openwrt-Passwall/openwrt-passwall" "main" "pkg"
 
 # 解封 iStore 应用商店与 QuickStart

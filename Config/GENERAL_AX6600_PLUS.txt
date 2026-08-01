@@ -104,13 +104,10 @@ CONFIG_PACKAGE_luci-app-kucat-config=y
 CONFIG_PACKAGE_luci-app-store=y
 CONFIG_PACKAGE_luci-app-quickstart=y
 
-# 科学上网插件全家桶 (PassWall, PassWall2, OpenClash, HomeProxy, Nikki, Momo, daed)
+# 科学上网插件配置 (PassWall, PassWall2, OpenClash, daed)
 CONFIG_PACKAGE_luci-app-passwall=y
 CONFIG_PACKAGE_luci-app-passwall2=y
 CONFIG_PACKAGE_luci-app-openclash=y
-CONFIG_PACKAGE_luci-app-homeproxy=y
-CONFIG_PACKAGE_luci-app-nikki=y
-CONFIG_PACKAGE_luci-app-momo=y
 CONFIG_PACKAGE_daed=y
 CONFIG_PACKAGE_luci-app-daede=y
 CONFIG_PACKAGE_kmod-sched-bpf=y
