@@ -275,6 +275,9 @@ jobs:
             # 对最终命名后的固件生成校验文件，供用户刷机前验证下载完整性；失败不阻塞发布
             (cd ./upload/ && sha256sum *.bin > sha256sums.txt) || true
 
+            # 彻底清理无用的数百个 .apk 单项杂乱依赖包，防止淹没真正的 .bin 刷机包
+            find ./upload/ -type f -name "*.apk" -exec rm -f {} +
+
             make clean -j$(nproc)
           fi
 
