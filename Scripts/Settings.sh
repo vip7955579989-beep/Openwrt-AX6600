@@ -72,24 +72,22 @@ if [[ "${WRT_TARGET^^}" == *"QUALCOMMAX"* ]]; then
 fi
 
 # =========================================================
-# 智能系统调优：优化内存水位线 (min_free_kbytes)
+# 深度修复：强制启用内核 BTF 支持与 eBPF (解决 daed 闪退报错)
 # =========================================================
+echo "CONFIG_DEBUG_INFO_BTF=y" >> ./.config
+echo "CONFIG_BPF_SCHED=y" >> ./.config
+echo "CONFIG_PACKAGE_kmod-sched-bpf=y" >> ./.config
+echo "CONFIG_PACKAGE_kmod-xdp-sockets-diag=y" >> ./.config
 
-MIN_FREE_VAL=16384
-CONF_FILE="./package/base-files/files/etc/sysctl.conf"
-
-# 提取当前值（只匹配非注释、行首）
-CURRENT_VAL=$(sed -n 's/^vm\.min_free_kbytes=\([0-9]\+\).*/\1/p' "$CONF_FILE")
-
-if [ -z "$CURRENT_VAL" ]; then
-    echo "" >> "$CONF_FILE"
-    echo "vm.min_free_kbytes=$MIN_FREE_VAL" >> "$CONF_FILE"
-    echo "Memory patch: value not found, added $MIN_FREE_VAL."
-else
-    if [ "$CURRENT_VAL" -lt "$MIN_FREE_VAL" ]; then
-        sed -i "s/^vm\.min_free_kbytes=.*/vm.min_free_kbytes=$MIN_FREE_VAL/" "$CONF_FILE"
-        echo "Memory patch: upgraded $CURRENT_VAL -> $MIN_FREE_VAL."
-    else
-        echo "Memory patch: current value ($CURRENT_VAL) is sufficient, skipped."
-    fi
+# 修改 qualcommax 内核配置文件模版，确保内核编译时生成 /sys/kernel/btf/vmlinux
+KERNEL_CFG_FILES=$(find ./target/linux/qualcommax/ -name "config-*" 2>/dev/null)
+if [ -n "$KERNEL_CFG_FILES" ]; then
+	for K_CFG in $KERNEL_CFG_FILES; do
+		sed -i '/CONFIG_DEBUG_INFO_BTF/d' "$K_CFG"
+		echo "CONFIG_DEBUG_INFO_BTF=y" >> "$K_CFG"
+		sed -i '/CONFIG_BPF_SCHED/d' "$K_CFG"
+		echo "CONFIG_BPF_SCHED=y" >> "$K_CFG"
+	done
+	echo "Kernel BTF configuration successfully applied!"
 fi
+

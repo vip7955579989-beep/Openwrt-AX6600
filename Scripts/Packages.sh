@@ -62,6 +62,8 @@ UPDATE_PACKAGE() {
 #UPDATE_PACKAGE "momo" "nikkinikki-org/OpenWrt-momo" "main"
 #UPDATE_PACKAGE "nikki" "nikkinikki-org/OpenWrt-nikki" "main"
 if [[ "${WRT_PROFILE^^}" == "PLUS" ]]; then
+	# 自动集成 daed 核心与 luci-app-daede 界面
+	UPDATE_PACKAGE "openwrt-daede" "kenzok8/openwrt-daede" "main" "pkg"
 	# LuCI 入口随 "pkg" 通配一并提取，依赖包（xray、sing-box、geodata 等）
 	# 由 passwall_packages feed 提供，避免同名包双重定义。
 	UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "master" "pkg"
