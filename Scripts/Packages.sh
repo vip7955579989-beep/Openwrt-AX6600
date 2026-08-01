@@ -73,27 +73,16 @@ if [[ "${WRT_PROFILE^^}" == "PLUS" ]]; then
 	# 分区扩容与网络唤醒：源码仅 PLUS 版拉取，PURE 中同名 =y 配置因无源码自动失效
 	UPDATE_PACKAGE "partexp" "sirpdboy/luci-app-partexp" "main"
 	UPDATE_PACKAGE "viking" "ones20250/packages" "main" "" "luci-app-timewol luci-app-wolplus"
+	
+	# 解封原作者仓库全套高级功能插件
+	UPDATE_PACKAGE "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "main"
+	UPDATE_PACKAGE "mosdns" "sbwml/luci-app-mosdns" "v5" "" "v2dat"
+	UPDATE_PACKAGE "ddns-go" "sirpdboy/luci-app-ddns-go" "main"
+	UPDATE_PACKAGE "diskman" "lisaac/luci-app-diskman" "master"
+	UPDATE_PACKAGE "easytier" "EasyTier/luci-app-easytier" "main"
+	UPDATE_PACKAGE "netspeedtest" "sirpdboy/netspeedtest" "main" "" "homebox speedtest"
+	UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
 fi
-
-#UPDATE_PACKAGE "mosdns" "sbwml/luci-app-mosdns" "v5" "" "v2dat"
-
-#UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
-
-#UPDATE_PACKAGE "ddns-go" "sirpdboy/luci-app-ddns-go" "main"
-#UPDATE_PACKAGE "diskman" "lisaac/luci-app-diskman" "master"
-#UPDATE_PACKAGE "easytier" "EasyTier/luci-app-easytier" "main"
-#UPDATE_PACKAGE "gecoosac" "laipeng668/luci-app-gecoosac" "main"
-#UPDATE_PACKAGE "netspeedtest" "sirpdboy/netspeedtest" "main" "" "homebox speedtest"
-#UPDATE_PACKAGE "openlist2" "sbwml/luci-app-openlist2" "main"
-#UPDATE_PACKAGE "partexp" "sirpdboy/luci-app-partexp" "main"
-#UPDATE_PACKAGE "qbittorrent" "sbwml/luci-app-qbittorrent" "master" "" "qt6base qt6tools rblibtorrent"
-#UPDATE_PACKAGE "qmodem" "FUjr/QModem" "main"
-#UPDATE_PACKAGE "quickfile" "sbwml/luci-app-quickfile" "main"
-#局域网唤醒
-#UPDATE_PACKAGE "viking" "ones20250/packages" "main" "" "luci-app-timewol luci-app-wolplus"
-#UPDATE_PACKAGE "vnt" "lmq8267/luci-app-vnt" "main"
-#雅典娜的led屏
-#UPDATE_PACKAGE "athena-led" "unraveloop/JDC-AX6600-Athena-LED-Controller" "main"
 
 #更新软件包版本
 UPDATE_VERSION() {
