@@ -91,3 +91,16 @@ if [ -n "$KERNEL_CFG_FILES" ]; then
 	echo "Kernel BTF configuration successfully applied!"
 fi
 
+# =========================================================
+# 彻底解决“上传软件包安装失败”问题：移除签名与内核版本校验拦截
+# =========================================================
+sed -i 's/option check_signature/# option check_signature/g' ./package/system/opkg/files/opkg.conf 2>/dev/null || true
+echo "option force_checksum 0" >> ./package/system/opkg/files/opkg.conf 2>/dev/null || true
+echo "option check_signature 0" >> ./package/system/opkg/files/opkg.conf 2>/dev/null || true
+
+# 开启核心包兼容层 (luci-compat 确保旧版及第三方插件全兼容)
+echo "CONFIG_PACKAGE_luci-compat=y" >> ./.config
+echo "CONFIG_PACKAGE_libc=y" >> ./.config
+echo "CONFIG_PACKAGE_libpthread=y" >> ./.config
+echo "CONFIG_PACKAGE_librt=y" >> ./.config
+
