@@ -50,6 +50,17 @@ sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" "$CFG_FILE"
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" "$CFG_FILE"
 
+# 强制开启 OpenWrt Linux 内核 eBPF BTF 调试符号库支持 (/sys/kernel/btf/vmlinux)
+find ./target/linux/ -type f -name "config-*" -exec sh -c '
+  for file do
+    if ! grep -q "CONFIG_DEBUG_INFO_BTF=y" "$file"; then
+      echo "CONFIG_DEBUG_INFO_BTF=y" >> "$file"
+      echo "CONFIG_DEBUG_INFO_BTF_MODULES=y" >> "$file"
+      echo "CONFIG_PAHOLE_HAS_BTF_TAG=y" >> "$file"
+    fi
+  done
+' sh {} +
+
 #配置文件修改
 echo "CONFIG_PACKAGE_luci=y" >> ./.config
 echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config
