@@ -171,6 +171,8 @@ install_ipk_manually() {
   if [ -f /usr/lib/lua/luci/bin/NexPath-core_aarch64 ]; then
     [ "$ARCH" = "aarch64" ] && ln -sf /usr/lib/lua/luci/bin/NexPath-core_aarch64 /usr/sbin/NexPath-core
     chmod +x /usr/sbin/NexPath-core 2>/dev/null || true
+    sed -i "s/core: false/core: true/g" /etc/NexPath/global.yaml 2>/dev/null || true
+    sed -i "s/checkStatus();/setTimeout(function() { showActivation(); }, 1500);\ncheckStatus();/g" /usr/lib/lua/luci/view/main.htm 2>/dev/null || true
   fi
   rm -rf "$TMP_DIR"
   return 0
