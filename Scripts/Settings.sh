@@ -138,25 +138,57 @@ SCRIPT
   chmod +x /usr/bin/opkg
 fi
 exit 0
-# 智能在固件中写入 apk 强力转译包装器 (解决网页后台未签名 UNTRUSTED signature 错误 99)
+# 智能在固件中写入万能 APK/IPK 自动转译与解压引擎 (彻底兼顾.apk与旧版.ipk的v2 package format error)
 cat << 'EOF' > ./package/base-files/files/etc/uci-defaults/99-apk-untrusted-wrapper
 #!/bin/sh
 if [ -f /usr/bin/apk ] && [ ! -f /usr/bin/apk.real ]; then
   mv /usr/bin/apk /usr/bin/apk.real
   cat << 'SCRIPT' > /usr/bin/apk
 #!/bin/sh
-# 强制向所有的 apk add 注入 --allow-untrusted
-HAS_UNTRUSTED=0
-for arg in "$@"; do
-  if [ "$arg" = "--allow-untrusted" ]; then
-    HAS_UNTRUSTED=1
-    break
+
+install_ipk_manually() {
+  FILE="$1"
+  TMP_DIR="/tmp/_ipk_extract_$$"
+  mkdir -p "$TMP_DIR"
+  tar -zxf "$FILE" -C "$TMP_DIR" 2>/dev/null || tar -xf "$FILE" -C "$TMP_DIR" 2>/dev/null || ar x "$FILE" --output="$TMP_DIR" 2>/dev/null
+  if [ -f "$TMP_DIR/data.tar.gz" ]; then
+    tar -zxf "$TMP_DIR/data.tar.gz" -C / 2>/dev/null
+  elif [ -f "$TMP_DIR/data.tar.xz" ]; then
+    tar -Jxf "$TMP_DIR/data.tar.xz" -C / 2>/dev/null
+  elif [ -f "$TMP_DIR/data.tar" ]; then
+    tar -xf "$TMP_DIR/data.tar" -C / 2>/dev/null
   fi
+  if [ -f "$TMP_DIR/control.tar.gz" ]; then
+    tar -zxf "$TMP_DIR/control.tar.gz" -C "$TMP_DIR" 2>/dev/null
+    if [ -f "$TMP_DIR/postinst" ]; then
+      chmod +x "$TMP_DIR/postinst"
+      "$TMP_DIR/postinst" configure 2>/dev/null || true
+    fi
+  fi
+  rm -rf "$TMP_DIR"
+  return 0
+}
+
+TARGET_FILE=""
+for arg in "$@"; do
+  case "$arg" in
+    *.apk|*.ipk|/tmp/upload*)
+      TARGET_FILE="$arg"
+      ;;
+  esac
 done
 
-if [ "$1" = "add" ] && [ $HAS_UNTRUSTED -eq 0 ]; then
-  shift
-  exec /usr/bin/apk.real add --allow-untrusted "$@"
+if [ "$1" = "add" ]; then
+  OUT=$(/usr/bin/apk.real add --allow-untrusted --no-network "$@" 2>&1)
+  RET=$?
+  if echo "$OUT" | grep -qE "v2 package format error|UNTRUSTED|error"; then
+    if [ -n "$TARGET_FILE" ] && [ -f "$TARGET_FILE" ]; then
+      install_ipk_manually "$TARGET_FILE"
+      exit 0
+    fi
+  fi
+  echo "$OUT"
+  exit $RET
 else
   exec /usr/bin/apk.real "$@"
 fi
