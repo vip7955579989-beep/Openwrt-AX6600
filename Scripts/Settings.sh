@@ -115,3 +115,28 @@ echo "CONFIG_PACKAGE_libc=y" >> ./.config
 echo "CONFIG_PACKAGE_libpthread=y" >> ./.config
 echo "CONFIG_PACKAGE_librt=y" >> ./.config
 
+# 智能在固件中写入 opkg 到 apk 自动兼容转译包装脚本 (彻底解决ipk安装报错)
+mkdir -p ./package/base-files/files/etc/uci-defaults/
+cat << 'EOF' > ./package/base-files/files/etc/uci-defaults/99-opkg-wrapper
+#!/bin/sh
+if [ ! -f /usr/bin/opkg ]; then
+  cat << 'SCRIPT' > /usr/bin/opkg
+#!/bin/sh
+# opkg 到 apk 的智能自动兼容转译包装器
+if [ "$1" = "install" ]; then
+  shift
+  exec apk add --allow-untrusted "$@"
+elif [ "$1" = "update" ]; then
+  exec apk update
+elif [ "$1" = "remove" ]; then
+  shift
+  exec apk del "$@"
+else
+  exec apk "$@"
+fi
+SCRIPT
+  chmod +x /usr/bin/opkg
+fi
+exit 0
+EOF
+
