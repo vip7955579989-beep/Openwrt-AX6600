@@ -165,6 +165,13 @@ install_ipk_manually() {
       "$TMP_DIR/postinst" configure 2>/dev/null || true
     fi
   fi
+  chmod +x /etc/init.d/* 2>/dev/null || true
+  chmod +x /usr/lib/lua/luci/bin/* 2>/dev/null || true
+  ARCH=$(uname -m)
+  if [ -f /usr/lib/lua/luci/bin/NexPath-core_aarch64 ]; then
+    [ "$ARCH" = "aarch64" ] && ln -sf /usr/lib/lua/luci/bin/NexPath-core_aarch64 /usr/sbin/NexPath-core
+    chmod +x /usr/sbin/NexPath-core 2>/dev/null || true
+  fi
   rm -rf "$TMP_DIR"
   return 0
 }
