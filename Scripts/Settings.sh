@@ -138,5 +138,31 @@ SCRIPT
   chmod +x /usr/bin/opkg
 fi
 exit 0
+# 智能在固件中写入 apk 强力转译包装器 (解决网页后台未签名 UNTRUSTED signature 错误 99)
+cat << 'EOF' > ./package/base-files/files/etc/uci-defaults/99-apk-untrusted-wrapper
+#!/bin/sh
+if [ -f /usr/bin/apk ] && [ ! -f /usr/bin/apk.real ]; then
+  mv /usr/bin/apk /usr/bin/apk.real
+  cat << 'SCRIPT' > /usr/bin/apk
+#!/bin/sh
+# 强制向所有的 apk add 注入 --allow-untrusted
+HAS_UNTRUSTED=0
+for arg in "$@"; do
+  if [ "$arg" = "--allow-untrusted" ]; then
+    HAS_UNTRUSTED=1
+    break
+  fi
+done
+
+if [ "$1" = "add" ] && [ $HAS_UNTRUSTED -eq 0 ]; then
+  shift
+  exec /usr/bin/apk.real add --allow-untrusted "$@"
+else
+  exec /usr/bin/apk.real "$@"
+fi
+SCRIPT
+  chmod +x /usr/bin/apk
+fi
+exit 0
 EOF
 
